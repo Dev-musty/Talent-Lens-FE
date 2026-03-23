@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import PageWrapper from '../components/layout/PageWrapper';
 import Input from '../components/ui/Input';
-import Select from '../components/ui/Select';
 import TagInput from '../components/ui/TagInput';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
@@ -35,7 +34,6 @@ export default function Apply() {
     bio: '',
     testimonies: '',
     proposed_rate: 0,
-    tier: 'junior',
   });
   const [portfolioInputs, setPortfolioInputs] = useState(['']);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -298,19 +296,6 @@ export default function Apply() {
             required
             min={0}
             max={50}
-            disabled={loading}
-          />
-
-          <Select
-            label="Self-assessed Tier"
-            options={[
-              { value: 'junior', label: 'Junior (1-3 yrs)' },
-              { value: 'mid', label: 'Mid (3-6 yrs)' },
-              { value: 'senior', label: 'Senior (7+ yrs)' }
-            ]}
-            value={formData.tier}
-            onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
-            required
             disabled={loading}
           />
 
