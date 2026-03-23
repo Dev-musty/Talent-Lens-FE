@@ -34,6 +34,7 @@ export interface ApplicationPayload {
   bio: string;
   testimonies: string;
   proposed_rate: number;
+  tier: string;
 }
 
 export interface ApplicationResult {

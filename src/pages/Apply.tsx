@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import PageWrapper from '../components/layout/PageWrapper';
 import Input from '../components/ui/Input';
+import Select from '../components/ui/Select';
 import TagInput from '../components/ui/TagInput';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
@@ -34,6 +35,7 @@ export default function Apply() {
     bio: '',
     testimonies: '',
     proposed_rate: 0,
+    tier: 'junior',
   });
   const [portfolioInputs, setPortfolioInputs] = useState(['']);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -65,7 +67,11 @@ export default function Apply() {
     if (!formData.proposed_rate || formData.proposed_rate < 1) newErrors.proposed_rate = 'Rate must be at least $1';
 
     // validate portfolio URLs
-    const validUrls = portfolioInputs.filter((u) => u.trim());
+    const validUrls = portfolioInputs.filter((u) => u.trim()).map(u => {
+      let url = u.trim();
+      if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+      return url;
+    });
     for (const url of validUrls) {
       try {
         new URL(url);
@@ -85,7 +91,11 @@ export default function Apply() {
 
     const payload: ApplicationPayload = {
       ...formData,
-      portfolio_urls: portfolioInputs.filter((u) => u.trim()),
+      portfolio_urls: portfolioInputs.filter((u) => u.trim()).map(u => {
+        let url = u.trim();
+        if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+        return url;
+      }),
     };
 
     setLoading(true);
@@ -291,6 +301,19 @@ export default function Apply() {
             disabled={loading}
           />
 
+          <Select
+            label="Self-assessed Tier"
+            options={[
+              { value: 'junior', label: 'Junior (1-3 yrs)' },
+              { value: 'mid', label: 'Mid (3-6 yrs)' },
+              { value: 'senior', label: 'Senior (7+ yrs)' }
+            ]}
+            value={formData.tier}
+            onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
+            required
+            disabled={loading}
+          />
+
           <Input
             label="Bio"
             placeholder="Brief description of your background and expertise..."
@@ -309,10 +332,10 @@ export default function Apply() {
             {portfolioInputs.map((url, i) => (
               <div key={i} className="flex gap-2">
                 <input
-                  type="url"
+                  type="text"
                   value={url}
                   onChange={(e) => updatePortfolio(i, e.target.value)}
-                  placeholder="https://github.com/you"
+                  placeholder="github.com/you"
                   className="input-field flex-1"
                   disabled={loading}
                 />
